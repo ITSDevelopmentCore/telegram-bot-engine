@@ -1,4 +1,4 @@
-package its.telegram.bot.core.ui
+package bot.core.ui
 
 import org.jetbrains.annotations.NotNull
 import org.telegram.telegrambots.meta.api.methods.ParseMode

@@ -1,4 +1,4 @@
-package its.telegram.bot.core.ui
+package bot.core.ui
 
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.InlineKeyboardMarkup

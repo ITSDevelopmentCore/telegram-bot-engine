@@ -1,6 +1,6 @@
-package its.telegram.bot.core.plugin
+package bot.core.plugin
 
-import its.telegram.bot.core.engine.Engine
+import bot.core.engine.Engine
 import org.telegram.telegrambots.meta.api.objects.Update
 
 /**
@@ -43,7 +43,10 @@ abstract class Plugin(val engine : Engine){
 
     }
 
-    abstract fun processMessage(update: Update)
+    open fun processMessage(update: Update)
+    {
+
+    }
 
 
 }
