@@ -9,7 +9,6 @@ repositories {
 
 project.extra["version_telegram_bot_library"] = "6.5.0"
 
-
 dependencies {
     /**
      * Telegram Bot Libraries

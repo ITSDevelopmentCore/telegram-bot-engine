@@ -11,7 +11,7 @@ import bot.core.engine.logger
  */
 abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
 
-    private val activeUsers : HashMap<Session, T> = HashMap()
+    val activeUsers : HashMap<Session, T> = HashMap()
 
     /**
      * Создает пользовательскую сессию, оповещает Pipeline о том,
@@ -45,7 +45,6 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
             (it.sessionStart / 1000) - (System.currentTimeMillis() / 1000) > period
         }
     }
-
 
     fun abortSessions() = clearSessions(0)
 }

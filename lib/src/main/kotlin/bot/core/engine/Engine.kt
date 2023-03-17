@@ -1,7 +1,6 @@
 package bot.core.engine
 
 import bot.core.plugin.Plugin
-import bot.core.processor.Processor
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -39,11 +38,6 @@ class Engine(private val credentials: Credentials) : TelegramLongPollingCommandB
         logger.info("Plugin ${T::class.java.simpleName} installed successfully")
     }
 
-    inline fun <reified P : Processor> installProcessor(processor: P) {
-        logger.info("Starting installation of ${P::class.java.simpleName} Processor" )
-        pipeline.processors.add(processor)
-    }
-
     /**
      * Конфигурация бота
      */
@@ -62,7 +56,7 @@ class Engine(private val credentials: Credentials) : TelegramLongPollingCommandB
 
 }
 
-val logger by lazy {
+val logger: Logger by lazy {
     LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME)
 }
 

@@ -12,92 +12,62 @@ import java.util.stream.Collectors
 /**
  * Добавление Inline клавиатуры к SendMessage
  * @param buttonsPerRow - Количество кнопок в ряду
- * @param buttons - Массив строк, каждая из которых преобразуется в кнопку.
+ * @param buttonLabels - Массив строк, каждая из которых преобразуется в кнопку.
  */
-fun SendMessage.createInlineKeyboard(buttonsPerRow: Int = 1, buttons: List<String> = listOf("Button 1", "Button 2","Button 3")) {
+fun SendMessage.createInlineKeyboard(
+    buttonsPerRow: Int = 1,
+    buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3")) {
 
-    val buttons = transformStringsToButtons(buttons)
-    val builder = InlineKeyboardMarkup.builder()
-
-    do {
-        val row = buttons
-            .stream()
-            .limit(buttonsPerRow.toLong())
-            .collect(Collectors.toList())
-
-        for (i in 0 until buttonsPerRow) {
-            buttons.poll()
+    val buttonRows = buttonLabels.chunked(buttonsPerRow).map { row ->
+        row.map { buttonText ->
+            InlineKeyboardButton.builder()
+                .text(buttonText)
+                .callbackData(buttonText)
+                .build()
         }
-
-        builder.keyboardRow(row)
     }
-    while (buttons.size > 0)
 
+    val inlineKeyboardMarkupBuilder = InlineKeyboardMarkup.builder()
 
-    this.replyMarkup = builder.build()
+    buttonRows.forEach { row ->
+        inlineKeyboardMarkupBuilder.keyboardRow(row)
+    }
+
+    this.replyMarkup = inlineKeyboardMarkupBuilder.build()
 }
 
 
 /**
  * Добавление Bottom клавиатуры к SendMessage
  * @param buttonsPerRow - Количество кнопок в ряду
- * @param context - Массив строк, каждая из которых преобразуется в кнопку.
+ * @param buttonLabels - Массив строк, каждая из которых преобразуется в кнопку.
+ * @param oneTime - Будет ли клавиатура действительна только 1 нажатие на нее.
  */
 fun SendMessage.createBottomKeyboard(
     buttonsPerRow: Int = 1,
-    buttons: List<String> = listOf("Button 1", "Button 2","Button 3"),
-    oneTime : Boolean = false) : SendMessage {
+    buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3"),
+    oneTime: Boolean = false
+): SendMessage {
 
-    val buttons = transformStringsToBottomButtons(buttons)
-    val builder = ReplyKeyboardMarkup.builder()
-    do {
-        val row = buttons
-            .stream()
-            .limit(buttonsPerRow.toLong())
-            .collect(Collectors.toList())
-
-        for (i in 0 until buttonsPerRow) {
-            buttons.poll()
+    val buttonRows = buttonLabels.chunked(buttonsPerRow).map { row ->
+        row.map { buttonText ->
+            KeyboardButton.builder()
+                .text(buttonText)
+                .build()
         }
+    }
 
+    val replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder()
+        .resizeKeyboard(true)
+        .oneTimeKeyboard(oneTime)
+
+    buttonRows.forEach { row ->
         val keyboardRow = KeyboardRow()
         keyboardRow.addAll(row)
-
-        builder.keyboardRow(keyboardRow)
+        replyKeyboardMarkupBuilder.keyboardRow(keyboardRow)
     }
-    while (buttons.size > 0)
 
-    this.replyMarkup = builder.resizeKeyboard(true).oneTimeKeyboard(oneTime).build()
-
+    this.replyMarkup = replyKeyboardMarkupBuilder.build()
     return this
-}
-
-
-
-
-private fun transformStringsToBottomButtons(context: List<String>): LinkedBlockingQueue<KeyboardButton> {
-    return context.stream()
-        .map { name ->
-            KeyboardButton.builder()
-                .text(name)
-                .build()
-        }
-        .collect(
-            Collectors.toCollection { LinkedBlockingQueue() }
-        )
-}
-
-
-private fun transformStringsToButtons(context: List<String>): LinkedBlockingQueue<InlineKeyboardButton> {
-    return context.stream()
-        .map { name ->
-            InlineKeyboardButton.builder()
-                .text(name)
-                .callbackData(name)
-                .build()
-        }
-        .collect(
-            Collectors.toCollection { LinkedBlockingQueue() }
-        )
 }
 

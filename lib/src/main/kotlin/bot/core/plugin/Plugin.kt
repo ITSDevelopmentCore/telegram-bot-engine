@@ -20,33 +20,33 @@ abstract class Plugin(val engine : Engine){
         this.startTriggers.addAll(textTrigger)
     }
 
-
     /**
      * Базовый механизм обработки
      */
     abstract fun canProcess(update: Update) : Boolean
 
-    fun process(update: Update)
+    fun process(update: Update) : Boolean
     {
         if (update.message != null) {
-            processMessage(update)
-            return
+            return processMessage(update)
         }
         if (update.callbackQuery != null) {
-            processCallbackQuery(update)
-            return
+            return processCallbackQuery(update)
         }
+        return true
     }
 
-    open fun processCallbackQuery(update: Update)
+    open fun processCallbackQuery(update: Update) : ShouldPassToNext
     {
-
+        return true
     }
 
-    open fun processMessage(update: Update)
+    open fun processMessage(update: Update) : ShouldPassToNext
     {
-
+        return true
     }
-
 
 }
+
+typealias ShouldPassToNext = Boolean
+

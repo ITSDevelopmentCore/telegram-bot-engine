@@ -10,7 +10,7 @@ data class Session(
 )
 
 /**
- * Создает пользотеля по имеющемуся апдейт
+ * Создает пользотеля по имеющемуся Update
  */
 fun createSession(update : Update) : Session
 {
