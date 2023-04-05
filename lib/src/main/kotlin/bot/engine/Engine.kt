@@ -1,6 +1,6 @@
-package bot.core.engine
+package bot.engine
 
-import bot.core.plugin.Plugin
+import bot.plugin.Plugin
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -12,7 +12,7 @@ class Engine(private val credentials: Credentials) : TelegramLongPollingCommandB
     val pipeline = Pipeline()
 
     override fun processNonCommandUpdate(update: Update) {
-        runBlocking {
+        CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO)
             {
                 pipeline.process(update)

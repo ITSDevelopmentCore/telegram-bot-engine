@@ -24,3 +24,6 @@ build/
 *.rar
 *.bak
 *.swp
+
+# Sensitive data
+github.propertiess
