@@ -4,14 +4,15 @@ import bot.plugin.Plugin
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import org.telegram.telegrambots.bots.TelegramLongPollingBot
 import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
 import org.telegram.telegrambots.meta.api.objects.Update
 
-class Engine(private val credentials: Credentials) : TelegramLongPollingCommandBot() {
+class Engine(private val credentials: Credentials) : TelegramLongPollingBot(credentials.botToken) {
 
     val pipeline = Pipeline()
 
-    override fun processNonCommandUpdate(update: Update) {
+    override fun onUpdateReceived(update: Update) {
         CoroutineScope(Dispatchers.IO).launch {
             withContext(Dispatchers.IO)
             {
@@ -50,9 +51,6 @@ class Engine(private val credentials: Credentials) : TelegramLongPollingCommandB
         return credentials.botName
     }
 
-    override fun getBotToken(): String {
-        return credentials.botToken
-    }
 
 }
 
