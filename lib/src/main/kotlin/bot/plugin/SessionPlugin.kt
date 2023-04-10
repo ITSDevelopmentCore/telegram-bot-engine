@@ -65,6 +65,12 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
         }
     }
 
+    /**
+     * Отпускает пользовательскую сессию, но сохраняет его данные.
+     * В следующий раз, когда в Plugin поступит Update от пользователя -
+     *
+     */
+
     protected fun getData(session: Session) : T
     {
         if (Objects.nonNull(activeUsers[session]))

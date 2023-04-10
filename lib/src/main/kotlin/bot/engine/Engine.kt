@@ -50,8 +50,6 @@ class Engine(private val credentials: Credentials) : TelegramLongPollingBot(cred
     override fun getBotUsername(): String {
         return credentials.botName
     }
-
-
 }
 
 val logger: Logger by lazy {

@@ -16,7 +16,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 fun SendMessage.createInlineKeyboard(
     buttonsPerRow: Int = 1,
     buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3"),
-    buttonUrls: List<String?> = listOf(null, null, null)
+    buttonUrls: List<String?> = List(buttonLabels.size) { null }
 ) {
 
     val buttonRows = buttonLabels.chunked(buttonsPerRow).mapIndexed { rowIndex, row ->

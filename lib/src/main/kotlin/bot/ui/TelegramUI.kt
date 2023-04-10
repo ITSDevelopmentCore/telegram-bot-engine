@@ -1,6 +1,7 @@
 package bot.ui
 
 import org.jetbrains.annotations.NotNull
+import org.telegram.telegrambots.meta.api.methods.ActionType
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -13,7 +14,7 @@ import org.telegram.telegrambots.meta.api.objects.Message
  * @param text - Текст сообщения
  * @param chatId - ID Чата, которому предназначено сообщение
  */
-fun text(@NotNull text: String, @NotNull chatId: Long): SendMessage = SendMessage
+fun text(text: String, chatId: Long): SendMessage = SendMessage
     .builder()
     .chatId(chatId.toString())
     .parseMode(ParseMode.HTML)
@@ -41,6 +42,15 @@ fun edit(message: Message, text: String): EditMessageText = EditMessageText
     .messageId(message.messageId)
     .text(text)
     .parseMode(ParseMode.HTML)
+    .build()
+
+/**
+ * Отсылает статус "Typing"
+ */
+fun typing(chatId: Long) : SendChatAction = SendChatAction
+    .builder()
+    .chatId(chatId)
+    .action(ActionType.TYPING.toString())
     .build()
 
 

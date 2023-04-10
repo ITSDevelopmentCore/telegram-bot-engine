@@ -1,5 +1,6 @@
 package bot.engine
 
+import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 
 data class Session(
@@ -7,6 +8,7 @@ data class Session(
     val telegramId : Long,
     val telegramName : String?,
     val telegramUsername : String?,
+    val lastMessage: Message?,
     private val timestamp : Long = System.currentTimeMillis()
 )
 {
@@ -44,7 +46,8 @@ fun createSession(update : Update) : Session
             update.callbackQuery.message.chatId,
             update.callbackQuery.from.id,
             update.callbackQuery.from.firstName,
-            update.callbackQuery.from.userName
+            update.callbackQuery.from.userName,
+            null
         )
     }
     else
@@ -53,7 +56,8 @@ fun createSession(update : Update) : Session
             update.message.chatId,
             update.message.from.id,
             update.message.from.firstName,
-            update.message.from.userName
+            update.message.from.userName,
+            update.message
         )
     }
 }

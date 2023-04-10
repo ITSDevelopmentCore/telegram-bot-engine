@@ -39,7 +39,7 @@ publishing {
 
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "1.0.3"
+            version = "1.0.4"
         }
     }
 
