@@ -1,12 +1,13 @@
 package bot.ui
 
-import org.jetbrains.annotations.NotNull
 import org.telegram.telegrambots.meta.api.methods.ActionType
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.Message
 
 /**
@@ -51,6 +52,20 @@ fun typing(chatId: Long) : SendChatAction = SendChatAction
     .builder()
     .chatId(chatId)
     .action(ActionType.TYPING.toString())
+    .build()
+
+
+/**
+ * Создает сообщение с фотографией
+ * @param text - Текст сообщения
+ * @param chatId - ID Чата, которому предназначено сообщение
+ */
+fun photo(text : String, photo : String, chatId: Long) = SendPhoto
+    .builder()
+    .caption(text)
+    .photo(InputFile(photo))
+    .parseMode(ParseMode.HTML)
+    .chatId(chatId)
     .build()
 
 
