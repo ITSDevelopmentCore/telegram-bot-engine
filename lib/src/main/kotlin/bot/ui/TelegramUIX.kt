@@ -17,7 +17,7 @@ import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.Keyboard
 fun SendMessage.createInlineKeyboard(
     buttonsPerRow: Int = 1,
     buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3"),
-    buttonData: List<String?> = List(buttonLabels.size) { null },
+    buttonData: List<String?> = buttonLabels,
     buttonUrls: List<String?> = List(buttonLabels.size) { null }
 ) {
 
