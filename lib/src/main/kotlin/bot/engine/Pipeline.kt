@@ -2,6 +2,7 @@ package bot.engine
 
 import bot.plugin.Plugin
 import bot.plugin.Plugin.Companion.PRIORITY_PREPROCESSOR
+import bot.plugin.SessionPlugin
 import org.telegram.telegrambots.meta.api.objects.Update
 import java.util.concurrent.ConcurrentHashMap
 
@@ -43,6 +44,18 @@ class Pipeline {
             if (plugin.canProcess(update))
                 if (!plugin.process(update))
                     break
+    }
+
+
+    fun <T : SessionPlugin<*>> pushToPlugin(update : Update, pluginClass : Class<T>){
+        val session = createSession(update)
+        pluginSessions
+            .filter { entry -> entry.value.contains(session) }
+            .firstNotNullOf { entry -> (entry.key as SessionPlugin<*>).endSession(session) }
+        pluginSessions
+            .filter { entry -> entry.key::class.java == pluginClass }
+            .firstNotNullOf { entry -> entry.value.add(session) }
+        process(update)
     }
 
 }
