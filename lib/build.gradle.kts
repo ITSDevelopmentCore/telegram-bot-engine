@@ -31,15 +31,22 @@ tasks.named<Test>("test") {
     useJUnitPlatform()
 }
 
+val sourceJar by tasks.registering(Jar::class) {
+    archiveClassifier.set("sources")
+    from(sourceSets["main"].allSource)
+}
+
 publishing {
 
     publications {
         register("mavenJava", MavenPublication::class) {
             from(components["java"])
-
+            artifact(sourceJar) {
+                classifier = "sources"
+            }
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "1.0.5"
+            version = "1.0.6"
         }
     }
 
