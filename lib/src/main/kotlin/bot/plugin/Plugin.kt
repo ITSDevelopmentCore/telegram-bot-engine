@@ -36,7 +36,7 @@ abstract class Plugin(val engine : Engine) : Comparable<Plugin> {
 
     open fun process(update: Update) : Boolean
     {
-        if (update.message.photo != null) {
+        if (update.message != null && update.message.photo != null) {
             return processPhoto(update)
         }
         if (update.message != null) {
