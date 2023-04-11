@@ -51,7 +51,8 @@ fun SendMessage.createInlineKeyboard(
 fun SendMessage.createBottomKeyboard(
     buttonsPerRow: Int = 1,
     buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3"),
-    oneTime: Boolean = false
+    oneTime: Boolean = false,
+    isPersistent: Boolean = false
 ) {
 
     val buttonRows = buttonLabels.chunked(buttonsPerRow).map { row ->
@@ -64,6 +65,7 @@ fun SendMessage.createBottomKeyboard(
 
     val replyKeyboardMarkupBuilder = ReplyKeyboardMarkup.builder()
         .resizeKeyboard(true)
+        .isPersistent(isPersistent)
         .oneTimeKeyboard(oneTime)
 
     buttonRows.forEach { row ->
@@ -85,7 +87,7 @@ fun SendMessage.createBottomKeyboard(
 fun EditMessageText.createInlineKeyboard(
     buttonsPerRow: Int = 1,
     buttonLabels: List<String> = listOf("Button 1", "Button 2", "Button 3"),
-    buttonData: List<String?> = List(buttonLabels.size) { null },
+    buttonData: List<String?> = buttonLabels,
     buttonUrls: List<String?> = List(buttonLabels.size) { null }
 ) {
 
@@ -93,7 +95,6 @@ fun EditMessageText.createInlineKeyboard(
         row.mapIndexed { buttonIndex, buttonText ->
             InlineKeyboardButton.builder()
                 .text(buttonText)
-                .callbackData(buttonText)
                 .callbackData(buttonData[rowIndex * buttonsPerRow + buttonIndex])
                 .url(buttonUrls[rowIndex * buttonsPerRow + buttonIndex])
                 .build()

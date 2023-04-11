@@ -1,55 +1,86 @@
 package bot.engine
 
 import bot.plugin.Plugin
+import bot.plugin.SessionPlugin
 import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
-import org.telegram.telegrambots.extensions.bots.commandbot.TelegramLongPollingCommandBot
 import org.telegram.telegrambots.meta.api.objects.Update
+import java.util.concurrent.ConcurrentHashMap
 
-class Engine(private val credentials: Credentials) : TelegramLongPollingBot(credentials.botToken) {
+/**
+ * Класс - обертка над TelegramLongPollingBot
+ */
+class Engine(
+    private val botName: String,
+    private val botToken: String
+) : TelegramLongPollingBot(botToken) {
 
-    val pipeline = Pipeline()
+    /**
+     * Сессионные плагины
+     */
+    val sessionPlugins = ConcurrentHashMap<Plugin, HashSet<Session>>()
 
-    override fun onUpdateReceived(update: Update) {
-        CoroutineScope(Dispatchers.IO).launch {
-            withContext(Dispatchers.IO)
-            {
-                pipeline.process(update)
-            }
-        }
-    }
-
-    inline fun <reified T : Plugin> installPlugin(plugin: T, configuration: T.() -> Unit) {
-        logger.info("Starting installation of ${T::class.java.simpleName} Plugin")
-
-        plugin.apply(configuration)
-        pipeline.installPlugin(plugin)
-
-        logger.info("Plugin ${T::class.java.simpleName} installed successfully")
-    }
-
-
-    inline fun <reified T : Plugin> installPlugin(plugin: T) {
-        logger.info("Starting installation of ${T::class.java.simpleName} Plugin" )
-
-        pipeline.installPlugin(plugin)
-
-        logger.info("Plugin ${T::class.java.simpleName} installed successfully")
+    fun installPlugin(plugin: Plugin) {
+        sessionPlugins[plugin] = HashSet()
     }
 
     /**
-     * Конфигурация бота
+     * Препроцессоры
      */
-    data class Credentials(
-        val botName  : String,
-        val botToken : String
-    )
+    val preprocessors = HashSet<Plugin>()
 
-    override fun getBotUsername(): String {
-        return credentials.botName
+    fun installPreprocessor(plugin: Plugin) {
+        preprocessors.add(plugin)
     }
+
+
+    private fun process(update: Update) {
+        preprocessors.forEach { preprocessor -> preprocessor.process(update) }
+
+        val session = createSession(update)
+
+        if (!passToSession(update, session))
+            passToPlugin(update)
+    }
+
+    private fun passToSession(update: Update, session: Session) : Boolean {
+        for (plugin in sessionPlugins.keys)
+            if (sessionPlugins[plugin]!!.contains(session))
+            {
+                plugin.process(update)
+                return true
+            }
+        return false
+    }
+
+    private fun passToPlugin(update: Update) {
+        for (plugin in sessionPlugins.keys.sortedBy { it.priority } )
+            if (plugin.canProcess(update))
+                if (!plugin.process(update))
+                    break
+    }
+
+
+    fun <T : SessionPlugin<*>> pushToPlugin(update : Update, pluginClass : Class<T>){
+        val session = createSession(update)
+        sessionPlugins
+            .filter { entry -> entry.value.contains(session) }
+            .firstNotNullOf { entry -> (entry.key as SessionPlugin<*>).endSession(session) }
+        sessionPlugins
+            .filter { entry -> entry.key::class.java == pluginClass }
+            .firstNotNullOf { entry -> entry.value.add(session) }
+        process(update)
+    }
+
+    override fun onUpdateReceived(update: Update) {
+        GlobalScope.launch {
+            process(update)
+        }
+    }
+
+    override fun getBotUsername() = botName
 }
 
 val logger: Logger by lazy {

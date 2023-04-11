@@ -22,7 +22,7 @@ abstract class Plugin(val engine : Engine) : Comparable<Plugin> {
     /**
      * Добавление триггеров на отправление сообщений
      */
-    protected val startTriggers = hashSetOf<String>()
+    val startTriggers = hashSetOf<String>()
 
     fun addPluginTrigger(vararg textTrigger : String)
     {
@@ -36,6 +36,9 @@ abstract class Plugin(val engine : Engine) : Comparable<Plugin> {
 
     open fun process(update: Update) : Boolean
     {
+        if (update.message.photo != null) {
+            return processPhoto(update)
+        }
         if (update.message != null) {
             return processMessage(update)
         }
@@ -45,20 +48,20 @@ abstract class Plugin(val engine : Engine) : Comparable<Plugin> {
         return true
     }
 
-    open fun processCallbackQuery(update: Update) = true
+    open fun processPhoto(update: Update) = false
 
-    open fun processMessage(update: Update) = true
+    open fun processCallbackQuery(update: Update) = false
+
+    open fun processMessage(update: Update) = false
 
     companion object {
-        const val PRIORITY_MINIMUM : Byte =-1
-        const val PRIORITY_LOW : Byte = 25
-        const val PRIORITY_NORMAL : Byte = 50
-        const val PRIORITY_HIGH : Byte = 75
-        const val PRIORITY_MAXIMUM : Byte = 100
-        const val PRIORITY_PREPROCESSOR : Byte = 120
+        const val PRIORITY_MINIMUM : Byte = 120
+        const val PRIORITY_LOW : Byte = 100
+        const val PRIORITY_NORMAL : Byte = 75
+        const val PRIORITY_HIGH : Byte = 50
+        const val PRIORITY_MAXIMUM : Byte = 25
+        const val PRIORITY_PREPROCESSOR : Byte = -1
     }
 }
-
-typealias ShouldPassToNext = Boolean
 
 

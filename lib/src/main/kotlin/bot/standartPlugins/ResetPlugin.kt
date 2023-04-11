@@ -4,7 +4,6 @@ import bot.engine.Engine
 import bot.engine.createSession
 import bot.plugin.Plugin
 import bot.plugin.SessionPlugin
-import bot.plugin.ShouldPassToNext
 import bot.ui.createBottomKeyboard
 import bot.ui.text
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -15,14 +14,15 @@ class ResetPlugin(engine: Engine) : Plugin(engine){
     val message : SendMessage = text(TEXT_START, 0).apply {
         createBottomKeyboard(
             buttonLabels = listOf("ResetPlugin", "ResetPlugin", "ResetPlugin"),
-            oneTime = true)
+            oneTime = true,
+            isPersistent = true)
     }
 
     init {
         addPluginTrigger("/start", "/reset")
     }
 
-    override fun processMessage(update: Update): ShouldPassToNext {
+    override fun processMessage(update: Update): Boolean {
         when(update.message.text)
         {
             COMMAND_RESET, COMMAND_START ->  processReset(update)
@@ -33,7 +33,7 @@ class ResetPlugin(engine: Engine) : Plugin(engine){
     private fun processReset(update: Update) {
         val session = createSession(update)
 
-        engine.pipeline.pluginSessions.keys.forEach {
+        engine.sessionPlugins.keys.forEach {
             if (it is SessionPlugin<*>)
                 it.endSession(session)
         }

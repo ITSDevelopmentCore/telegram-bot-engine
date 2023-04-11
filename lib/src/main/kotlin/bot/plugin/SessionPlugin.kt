@@ -31,21 +31,7 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
     protected fun startSession(session : Session)
     {
         if (Objects.isNull(activeUsers[session])) {
-            engine.pipeline.pluginSessions[this]!!.add(session)
-            activeUsers[session] = provideData()
-            logger.debug("Session plugin ${this::class.java.simpleName} lock user with name ${session.telegramUsername}")
-        }
-    }
-
-    /**
-     * Создает пользовательскую сессию, оповещает Pipeline о том,
-     * что все апдейты от текущего пользователя должны поступать в эту сессию
-     */
-    protected fun startSessionWithReset(session : Session)
-    {
-        if (Objects.nonNull(activeUsers[session])) {
-            engine.pipeline.pluginSessions[this]!!.remove(session)
-            engine.pipeline.pluginSessions[this]!!.add(session)
+            engine.sessionPlugins[this]!!.add(session)
             activeUsers[session] = provideData()
             logger.debug("Session plugin ${this::class.java.simpleName} lock user with name ${session.telegramUsername}")
         }
@@ -57,9 +43,9 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
      */
     fun endSession(session : Session)
     {
-        if (Objects.nonNull(activeUsers[session]))
+        if (activeUsers[session] != null)
         {
-            engine.pipeline.pluginSessions[this]!!.remove(session)
+            engine.sessionPlugins[this]!!.remove(session)
             activeUsers.remove(session)
             logger.debug("Session plugin ${this::class.java.simpleName} unlock user with name ${session.telegramUsername}")
         }
@@ -73,7 +59,7 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
 
     protected fun getData(session: Session) : T
     {
-        if (Objects.nonNull(activeUsers[session]))
+        if (activeUsers[session] != null)
             return activeUsers[session]!!
         else
             throw IllegalAccessException("Плагин ${this::class.java.simpleName} попытался получить данные сессии пользователя до открытия сессии")
@@ -81,7 +67,4 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
 
     abstract fun provideData() : T
 }
-
-const val PERIOD_TWO_DAYS = 172_800
-const val PERIOD_ONE_DAY = 86_400
 

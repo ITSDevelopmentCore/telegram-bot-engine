@@ -9,6 +9,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.Message
+import java.io.File
 
 /**
  * Создает простое текстовое сообщение
@@ -60,7 +61,7 @@ fun typing(chatId: Long) : SendChatAction = SendChatAction
  * @param text - Текст сообщения
  * @param chatId - ID Чата, которому предназначено сообщение
  */
-fun photo(text : String, photo : String, chatId: Long) = SendPhoto
+fun photo(text : String, photo : File, chatId: Long): SendPhoto = SendPhoto
     .builder()
     .caption(text)
     .photo(InputFile(photo))
