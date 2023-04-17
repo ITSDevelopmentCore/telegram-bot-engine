@@ -13,10 +13,11 @@ class ResetPlugin(engine: Engine) : Plugin(engine){
 
     var message : SendMessage = text(TEXT_START, 0).apply {
         createBottomKeyboard(
-            buttonLabels = listOf("ResetPlugin", "ResetPlugin", "ResetPlugin"),
+            buttonLabels = listOf(BUTTON_START, BUTTON_START, BUTTON_START),
             oneTime = true,
             isPersistent = true)
     }
+
     init {
         addPluginTrigger(COMMAND_RESET, COMMAND_START)
     }
@@ -46,6 +47,8 @@ class ResetPlugin(engine: Engine) : Plugin(engine){
     companion object {
         const val COMMAND_RESET = "/reset"
         const val COMMAND_START = "/start"
+
+        const val BUTTON_START = "Reset Plugin"
         const val TEXT_START = "Это сообщение генерируется стандартным плагином ResetPlugin. Задайте свое собственное сообщение с помощью свойства message"
     }
 }
