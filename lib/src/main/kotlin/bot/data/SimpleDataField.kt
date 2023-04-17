@@ -2,41 +2,69 @@ package bot.data
 
 import bot.ui.createInlineKeyboard
 import bot.ui.text
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 
 class SimpleDataField(override val name: String, val message: String) : DataField {
 
-    constructor(name: String, message: String, variants: List<String>, variantsData: List<String>) : this(name, message) {
+    private var value: String = ""
+
+    /**
+     * Работа с вариантами
+     */
+    fun applyVariants(variants: List<String>, variantsData: List<String>?) {
         this.variants = variants
-        this.variantsData = variantsData
+        if (variantsData == null)
+            this.variantsData = variants
+        else
+            this.variantsData = variantsData
     }
 
-    private var variants: List<String> = mutableListOf()
-    private var variantsData: List<String> = mutableListOf()
-
-
-    var value: String? = null
-
-    val canAcceptNewValue: Boolean = false
-
-    fun hasVariants() = variants.isNotEmpty()
-
-    override fun isFilled() = value != null
-
-    override fun createMessage(chatId: Long) = text(message, chatId)
-        .apply {
-            createInlineKeyboard(
-                buttonsPerRow = 1,
-                buttonLabels = if (canAcceptNewValue) variants.plus(NEW_VALUE) else variants,
-                buttonUrls = MutableList(variants.size + 1){ null },
-                buttonData = if (canAcceptNewValue) variantsData.plus(NEW_VALUE) else variantsData,
-            )
+    private var variants: List<String> = listOf()
+    private var variantsData: List<String> = listOf()
+    /**
+     * Работа с дополнительным значением
+     */
+    fun applyAdditional(buttonLabel: String, descriptionText: String) {
+        if (buttonLabel.isNotBlank()) {
+            this.extraLabel = buttonLabel
+            this.extraMessage = descriptionText
         }
+    }
+
+    private var extraLabel: String = ""
+    private var extraMessage: String = ""
+    private var waitingForExtra = false
+
+    override fun isFilled() = value.isNotBlank()
+
+
+    override fun createMessage(chatId: Long): SendMessage {
+        return if (waitingForExtra)
+            text(extraMessage, chatId)
+        else text(message, chatId)
+            .apply {
+                createInlineKeyboard(
+                    buttonLabels = if (extraLabel.isNotBlank()) variants.plus(extraLabel) else variants,
+                    buttonData = if (extraLabel.isNotBlank()) variantsData.plus(extraLabel) else variantsData
+                )
+            }
+
+    }
 
     override fun clear() {
-        value = null
+        value = ""
     }
 
-    override fun dispatchValue(value: String) : Boolean {
+
+    override fun dispatchValue(value: String): Boolean {
+        if (waitingForExtra) {
+            this.value = value
+            return true
+        }
+        if (value == extraLabel) {
+            waitingForExtra = true
+            return false
+        }
         if (value.isNotBlank()) {
             this.value = value
             return true
@@ -44,11 +72,7 @@ class SimpleDataField(override val name: String, val message: String) : DataFiel
         return false
     }
 
-    companion object {
-        const val NEW_VALUE = "Другое значение"
-    }
 
-    override fun toString(): String {
-        return value.toString()
-    }
+    override fun toString() = value
+
 }

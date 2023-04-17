@@ -11,15 +11,14 @@ import org.telegram.telegrambots.meta.api.objects.Update
 
 class ResetPlugin(engine: Engine) : Plugin(engine){
 
-    val message : SendMessage = text(TEXT_START, 0).apply {
+    var message : SendMessage = text(TEXT_START, 0).apply {
         createBottomKeyboard(
             buttonLabels = listOf("ResetPlugin", "ResetPlugin", "ResetPlugin"),
             oneTime = true,
             isPersistent = true)
     }
-
     init {
-        addPluginTrigger("/start", "/reset")
+        addPluginTrigger(COMMAND_RESET, COMMAND_START)
     }
 
     override fun processMessage(update: Update): Boolean {

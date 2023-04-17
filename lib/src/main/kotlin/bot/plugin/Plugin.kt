@@ -3,6 +3,7 @@ package bot.plugin
 import bot.engine.Engine
 import bot.engine.logger
 import org.telegram.telegrambots.meta.api.objects.Update
+import java.nio.ByteBuffer
 
 /**
  * Базовый класс для подключаемых плагинов.
