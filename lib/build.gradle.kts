@@ -46,7 +46,7 @@ publishing {
             }
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "1.0.14"
+            version = "1.1.0"
         }
     }
 

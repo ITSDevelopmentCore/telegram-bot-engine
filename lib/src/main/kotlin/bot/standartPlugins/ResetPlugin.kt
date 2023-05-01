@@ -9,7 +9,7 @@ import bot.ui.text
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.Update
 
-class ResetPlugin(engine: Engine) : Plugin(engine){
+class ResetPlugin private constructor(engine: Engine) : Plugin(engine){
 
     var message : SendMessage = text(TEXT_START, 0).apply {
         createBottomKeyboard(
@@ -43,7 +43,7 @@ class ResetPlugin(engine: Engine) : Plugin(engine){
         })
     }
 
-
+    
     companion object {
         const val COMMAND_RESET = "/reset"
         const val COMMAND_START = "/start"

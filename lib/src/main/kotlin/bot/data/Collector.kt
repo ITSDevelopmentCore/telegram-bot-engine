@@ -24,7 +24,7 @@ class Collector(val fields: MutableList<DataField>) {
         .createMessage(chatId)
 
     fun getByName(name: String) = fields
-        .first { field -> field.name == name }
+        .firstOrNull { field -> field.name == name }
 
 
 }

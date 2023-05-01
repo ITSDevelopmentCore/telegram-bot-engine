@@ -6,6 +6,7 @@ import kotlinx.coroutines.*
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.bots.TelegramLongPollingBot
+import org.telegram.telegrambots.meta.api.objects.Message
 import org.telegram.telegrambots.meta.api.objects.Update
 import java.util.concurrent.ConcurrentHashMap
 
@@ -72,6 +73,21 @@ class Engine(
             .filter { entry -> entry.key::class.java == pluginClass }
             .firstNotNullOf { entry -> entry.value.add(session) }
         process(update)
+    }
+
+    fun <T : SessionPlugin<*>> enforceToPlugin(update : Update, pluginClass : Class<T>){
+        val session = createSession(update)
+        sessionPlugins
+            .filter { entry -> entry.value.contains(session) }
+            .firstNotNullOf { entry -> (entry.key as SessionPlugin<*>).endSession(session) }
+        sessionPlugins
+            .filter { entry -> entry.key::class.java == pluginClass }
+            .firstNotNullOf { entry -> entry.value.add(session) }
+        process(update.apply {
+            message = Message().apply {
+                text = "ENFORCE"
+            }
+        })
     }
 
     override fun onUpdateReceived(update: Update) {

@@ -31,21 +31,21 @@ class SimpleDataField(override val name: String, val message: String) : DataFiel
         }
     }
 
-    private var extraLabel: String = ""
-    private var extraMessage: String = ""
+    private var extraLabel: String? = null
+    private var extraMessage: String? = null
     private var waitingForExtra = false
 
     override fun isFilled() = value.isNotBlank()
 
 
     override fun createMessage(chatId: Long): SendMessage {
-        return if (waitingForExtra)
-            text(extraMessage, chatId)
+        return if (waitingForExtra && extraMessage != null)
+            text(extraMessage!!, chatId)
         else text(message, chatId)
             .apply {
                 createInlineKeyboard(
-                    buttonLabels = if (extraLabel.isNotBlank()) variants.plus(extraLabel) else variants,
-                    buttonData = if (extraLabel.isNotBlank()) variantsData.plus(extraLabel) else variantsData
+                    buttonLabels = if (extraLabel != null) variants.plus(extraLabel!!) else variants,
+                    buttonData = if (extraLabel != null) variantsData.plus(extraLabel) else variantsData
                 )
             }
 
