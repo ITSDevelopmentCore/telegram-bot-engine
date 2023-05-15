@@ -4,6 +4,7 @@ import bot.engine.Engine
 import bot.engine.logger
 import org.telegram.telegrambots.meta.api.objects.Update
 import java.nio.ByteBuffer
+import kotlin.Nothing as Nothing1
 
 /**
  * Базовый класс для подключаемых плагинов.
@@ -54,6 +55,8 @@ abstract class Plugin(val engine : Engine) : Comparable<Plugin> {
     open fun processCallbackQuery(update: Update) = false
 
     open fun processMessage(update: Update) = false
+
+    open fun processForce(update: Update) = Any()
 
     companion object {
         const val PRIORITY_MINIMUM : Byte = 120

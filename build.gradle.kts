@@ -38,6 +38,17 @@ val sourceJar by tasks.registering(Jar::class) {
 
 publishing {
 
+    repositories {
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/ITSDevelopmentCore/telegram-bot-engine")
+            credentials {
+                username = project.findProperty("github.user") as String
+                password = project.findProperty("github.key") as String
+            }
+        }
+    }
+
     publications {
         register("mavenJava", MavenPublication::class) {
             from(components["java"])
@@ -46,18 +57,7 @@ publishing {
             }
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "1.1.0"
-        }
-    }
-
-    repositories {
-        maven {
-            name = "GitHub"
-            url = uri("https://maven.pkg.github.com/ITSDevelopmentCore/telegram-bot-engine")
-            credentials {
-                username = project.findProperty("github.user") as String
-                password = project.findProperty("github.key") as String
-            }
+            version = "1.1.4"
         }
     }
 

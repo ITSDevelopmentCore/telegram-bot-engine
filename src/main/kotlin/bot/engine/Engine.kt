@@ -38,7 +38,10 @@ class Engine(
 
 
     private fun process(update: Update) {
-        preprocessors.forEach { preprocessor -> preprocessor.process(update) }
+        preprocessors.forEach { preprocessor ->
+            if (preprocessor.canProcess(update))
+                preprocessor.process(update)
+        }
 
         val session = createSession(update)
 
@@ -71,7 +74,10 @@ class Engine(
             .firstNotNullOf { entry -> (entry.key as SessionPlugin<*>).endSession(session) }
         sessionPlugins
             .filter { entry -> entry.key::class.java == pluginClass }
-            .firstNotNullOf { entry -> entry.value.add(session) }
+            .firstNotNullOf { entry ->
+                entry.value.add(session)
+                entry.key.processForce(update)
+            }
         process(update)
     }
 

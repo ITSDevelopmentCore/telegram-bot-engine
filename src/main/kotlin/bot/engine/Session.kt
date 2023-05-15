@@ -15,6 +15,8 @@ data class Session(
         if (other !is Session) return false
         return telegramId == other.telegramId
     }
+
+    override fun toString() = "User ID : ${telegramId}. Username : $telegramUsername.\n"
 }
 
 /**
