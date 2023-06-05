@@ -8,6 +8,9 @@ data class Session(
     val telegramName: String?,
     val telegramUsername: String?,
 ) {
+
+    fun isEmpty() = chatId == 0L || telegramId == 0L
+
     override fun hashCode(): Int = telegramId.hashCode()
 
     override fun equals(other: Any?): Boolean {
@@ -23,19 +26,19 @@ data class Session(
  * Создает пользотеля по имеющемуся Update
  */
 fun createSession(update: Update) =
-    if (!update.hasCallbackQuery())
-        Session(
+    when {
+        update.hasMessage() -> Session(
             update.message.chatId,
             update.message.from.id,
             update.message.from.firstName,
             update.message.from.userName,
         )
-    else
-        Session(
+        update.hasCallbackQuery() -> Session(
             update.callbackQuery.message.chatId,
             update.callbackQuery.from.id,
             update.callbackQuery.from.firstName,
             update.callbackQuery.from.userName,
         )
+        else -> Session(0,0, null, null)
 
-
+    }

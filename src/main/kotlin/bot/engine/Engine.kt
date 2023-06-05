@@ -13,10 +13,10 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * Класс - обертка над TelegramLongPollingBot
  */
-class Engine(
-    private val botName: String,
-    private val botToken: String
-) : TelegramLongPollingBot(botToken) {
+open class Engine(
+     val name: String,
+     val token: String
+) : TelegramLongPollingBot(token) {
 
     /**
      * Сессионные плагины
@@ -39,13 +39,13 @@ class Engine(
 
     private fun process(update: Update) {
         preprocessors.forEach { preprocessor ->
-            if (preprocessor.canProcess(update))
-                preprocessor.process(update)
+            if (preprocessor.canProcess(update) && !preprocessor.process(update))
+                return
         }
 
         val session = createSession(update)
 
-        if (!passToSession(update, session))
+        if (session.isEmpty() || !passToSession(update, session))
             passToPlugin(update)
     }
 
@@ -102,7 +102,7 @@ class Engine(
         }
     }
 
-    override fun getBotUsername() = botName
+    override fun getBotUsername() = name
 }
 
 val logger: Logger by lazy {
