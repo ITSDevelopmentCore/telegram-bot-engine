@@ -1,13 +1,15 @@
 package bot.engine
 
 import org.telegram.telegrambots.meta.api.objects.Update
+import java.io.Serializable
 
+@kotlinx.serialization.Serializable
 data class Session(
     val chatId: Long,
     val telegramId: Long,
     val telegramName: String?,
     val telegramUsername: String?,
-) {
+) : Serializable {
 
     fun isEmpty() = chatId == 0L || telegramId == 0L
 

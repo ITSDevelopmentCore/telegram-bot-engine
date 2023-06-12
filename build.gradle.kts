@@ -2,6 +2,7 @@ plugins {
     id("org.jetbrains.kotlin.jvm") version "1.8.10"
     `java-library`
     `maven-publish`
+    kotlin("plugin.serialization") version "1.8.21"
 }
 
 repositories {
@@ -9,6 +10,7 @@ repositories {
 }
 
 project.extra["version_telegram_bot_library"] = "6.5.0"
+project.extra["version_kotlinx_serialization"] = "1.5.1"
 
 dependencies {
     /**
@@ -23,6 +25,11 @@ dependencies {
     implementation("org.slf4j:slf4j-api:2.0.6")
     implementation("ch.qos.logback:logback-classic:1.4.5")
     implementation("ch.qos.logback:logback-core:1.4.5")
+
+    /**
+     * KotlinX
+     */
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:${project.extra["version_kotlinx_serialization"]}")
 
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
 }
@@ -57,7 +64,7 @@ publishing {
             }
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "1.5.8"
+            version = "1.6.2"
         }
     }
 

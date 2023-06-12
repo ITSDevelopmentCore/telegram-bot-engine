@@ -21,7 +21,13 @@ abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
         val session = createSession(update)
                       startSession(session)
 
-        return super.process(update)
+        try {
+            return super.process(update)
+        } catch (e: Exception) {
+            endSession(session)
+        }
+
+        return false
     }
 
     /**

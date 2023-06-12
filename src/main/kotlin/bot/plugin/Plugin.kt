@@ -33,7 +33,9 @@ abstract class Plugin(val engine: Engine) : Comparable<Plugin> {
     /**
      * Базовый механизм обработки
      */
-    open fun canProcess(update: Update) = update.message != null && startTriggers.contains(update.message.text)
+    open fun canProcess(update: Update) =
+        update.message != null && startTriggers.contains(update.message.text) ||
+        update.callbackQuery != null && startTriggers.contains(update.callbackQuery.data.split("|")[0])
 
     open fun process(update: Update) =
         when {
