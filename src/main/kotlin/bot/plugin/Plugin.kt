@@ -63,6 +63,8 @@ abstract class Plugin(val engine: Engine) : Comparable<Plugin> {
         const val PRIORITY_MAXIMUM: Byte = 25
         const val PRIORITY_PREPROCESSOR: Byte = -1
     }
+
 }
+
 
 
