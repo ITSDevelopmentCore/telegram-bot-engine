@@ -1,5 +1,9 @@
 package bot.data.transfer
 
+import java.util.concurrent.atomic.AtomicInteger
+import kotlin.properties.ReadOnlyProperty
+import kotlin.reflect.KProperty
+
 /**
  * @author its_razex
  * Класс, реализующий объект данных, помещающийся в Callback Data в Telegram Button.
@@ -10,7 +14,7 @@ package bot.data.transfer
  *
  * Размер сериализованного вида объекта TransferData не должен превышать 64 байта
  */
-class TransferData(val commandIndex: Byte) {
+class TransferData(val trigger: Byte) {
 
     private var _payload: String
 
@@ -21,12 +25,12 @@ class TransferData(val commandIndex: Byte) {
     val payload: String
         get() = _payload
 
-    constructor(command: Byte, payload: String) : this(command) {
-        this._payload = payload
+    constructor(command: Byte, payload: Any) : this(command) {
+        this._payload = payload.toString()
     }
 
     fun serialize() = buildString {
-        append(commandIndex)
+        append(trigger)
         append("|")
         append(payload)
     }
@@ -45,5 +49,9 @@ class TransferData(val commandIndex: Byte) {
         }
 
     }
-
 }
+
+fun createTrigger() = currentIndex.getAndIncrement().toByte()
+
+private val currentIndex = AtomicInteger(-127)
+

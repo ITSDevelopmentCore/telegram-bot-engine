@@ -1,6 +1,7 @@
 package bot.engine
 
-import bot.plugin.Plugin
+import bot.data.transfer.createTrigger
+import bot.plugin.BasePlugin
 import bot.plugin.SessionPlugin
 import kotlinx.coroutines.*
 import org.slf4j.Logger
@@ -21,18 +22,18 @@ open class Engine(
     /**
      * Сессионные плагины
      */
-    val sessionPlugins = ConcurrentHashMap<Plugin, HashSet<Session>>()
+    val sessionPlugins = ConcurrentHashMap<BasePlugin, HashSet<Session>>()
 
-    fun installPlugin(plugin: Plugin) {
+    fun installPlugin(plugin: BasePlugin) {
         sessionPlugins[plugin] = HashSet()
     }
 
     /**
      * Препроцессоры
      */
-    val preprocessors = HashSet<Plugin>()
+    val preprocessors = HashSet<BasePlugin>()
 
-    fun installPreprocessor(plugin: Plugin) {
+    fun installPreprocessor(plugin: BasePlugin) {
         preprocessors.add(plugin)
     }
 
@@ -103,6 +104,7 @@ open class Engine(
     }
 
     override fun getBotUsername() = name
+
 }
 
 val logger: Logger by lazy {

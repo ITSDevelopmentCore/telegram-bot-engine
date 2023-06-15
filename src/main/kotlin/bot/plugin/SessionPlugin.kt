@@ -13,7 +13,7 @@ import kotlin.collections.HashMap
  * Наследники этого класса в любой момент могут вызвать метод startSession,
  * после чего этот плагин будет перехватывать все апдейты от этого пользователя.
  */
-abstract class SessionPlugin<T>(engine: Engine) : Plugin(engine) {
+abstract class SessionPlugin<T>(engine: Engine) : DefaultPlugin(engine) {
 
     val activeUsers : HashMap<Session, T> = HashMap()
 

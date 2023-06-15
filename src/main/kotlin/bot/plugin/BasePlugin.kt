@@ -3,17 +3,15 @@ package bot.plugin
 import bot.engine.Engine
 import bot.engine.logger
 import org.telegram.telegrambots.meta.api.objects.Update
-import java.nio.ByteBuffer
-import kotlin.Nothing as Nothing1
 
 /**
  * Базовый класс для подключаемых плагинов.
  * Каждый плагин обладает рядом триггеров.
  * Реализация метода canProcess определяет, имеет ли этот плагин триггер на поступивший апдейт.
  */
-abstract class Plugin(val engine: Engine) : Comparable<Plugin> {
+abstract class BasePlugin(val engine: Engine) : Comparable<BasePlugin> {
 
-    override fun compareTo(other: Plugin) = this.priority - other.priority
+    override fun compareTo(other: BasePlugin) = this.priority - other.priority
 
     var priority: Byte = PRIORITY_NORMAL
         set(value) {
@@ -24,18 +22,17 @@ abstract class Plugin(val engine: Engine) : Comparable<Plugin> {
     /**
      * Добавление триггеров на отправление сообщений
      */
-    val startTriggers = hashSetOf<String>()
+    private val textTriggerSet = hashSetOf<String>()
 
-    fun addPluginTrigger(vararg textTrigger: String) {
-        this.startTriggers.addAll(textTrigger)
-    }
+    fun addTextTrigger(trigger: String) = textTriggerSet.add(trigger)
+
 
     /**
      * Базовый механизм обработки
      */
     open fun canProcess(update: Update) =
-        update.message != null && startTriggers.contains(update.message.text) ||
-        update.callbackQuery != null && startTriggers.contains(update.callbackQuery.data.split("|")[0])
+        update.message != null && textTriggerSet.contains(update.message.text) ||
+        update.callbackQuery != null && textTriggerSet.contains(update.callbackQuery.data)
 
     open fun process(update: Update) =
         when {
