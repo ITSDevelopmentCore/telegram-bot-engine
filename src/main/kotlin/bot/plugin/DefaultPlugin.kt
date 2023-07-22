@@ -13,7 +13,6 @@ open class DefaultPlugin(engine: Engine) : BasePlugin(engine) {
 
     fun addTrigger(trigger: Byte) = triggerSet.add(trigger)
 
-
     override fun canProcess(update: Update) =
         update.callbackQuery != null && triggerSet.contains(TransferData.deserialize(update.callbackQuery.data).trigger)
                 || super.canProcess(update)

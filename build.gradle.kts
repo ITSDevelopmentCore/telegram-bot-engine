@@ -64,7 +64,7 @@ publishing {
             }
             groupId = "its.development.libraries"
             artifactId = "telegram-bot-engine"
-            version = "2.0-alpha8"
+            version = project.findProperty("version").toString()
         }
     }
 

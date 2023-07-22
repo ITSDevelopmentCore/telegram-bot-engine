@@ -14,7 +14,7 @@ import kotlin.reflect.KProperty
  *
  * Размер сериализованного вида объекта TransferData не должен превышать 64 байта
  */
-class TransferData(val trigger: Byte) {
+class TransferData(val trigger: Byte?) {
 
     private var _payload: String
 
@@ -25,7 +25,7 @@ class TransferData(val trigger: Byte) {
     val payload: String
         get() = _payload
 
-    constructor(command: Byte, payload: Any) : this(command) {
+    constructor(command: Byte?, payload: Any) : this(command) {
         this._payload = payload.toString()
     }
 
@@ -43,9 +43,9 @@ class TransferData(val trigger: Byte) {
             val array = raw.split("|")
 
             return if (array.size == 2)
-                TransferData(array.first().toByte(), array.last())
+                TransferData(array.first().toByteOrNull(), array.last())
             else
-                TransferData(array.first().toByte())
+                TransferData(array.first().toByteOrNull())
         }
 
     }
