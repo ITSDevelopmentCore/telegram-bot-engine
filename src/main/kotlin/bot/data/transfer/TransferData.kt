@@ -1,8 +1,6 @@
 package bot.data.transfer
 
 import java.util.concurrent.atomic.AtomicInteger
-import kotlin.properties.ReadOnlyProperty
-import kotlin.reflect.KProperty
 
 /**
  * @author its_razex
@@ -50,8 +48,4 @@ class TransferData(val trigger: Byte?) {
 
     }
 }
-
-fun createTrigger() = currentIndex.getAndIncrement().toByte()
-
-private val currentIndex = AtomicInteger(-127)
 

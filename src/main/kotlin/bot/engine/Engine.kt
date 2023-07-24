@@ -1,6 +1,5 @@
 package bot.engine
 
-import bot.data.transfer.createTrigger
 import bot.plugin.BasePlugin
 import bot.plugin.SessionPlugin
 import kotlinx.coroutines.*
@@ -80,21 +79,6 @@ open class Engine(
                 entry.key.processForce(update)
             }
         process(update)
-    }
-
-    fun <T : SessionPlugin<*>> enforceToPlugin(update : Update, pluginClass : Class<T>){
-        val session = createSession(update)
-        sessionPlugins
-            .filter { entry -> entry.value.contains(session) }
-            .firstNotNullOf { entry -> (entry.key as SessionPlugin<*>).endSession(session) }
-        sessionPlugins
-            .filter { entry -> entry.key::class.java == pluginClass }
-            .firstNotNullOf { entry -> entry.value.add(session) }
-        process(update.apply {
-            message = Message().apply {
-                text = "ENFORCE"
-            }
-        })
     }
 
     override fun onUpdateReceived(update: Update) {
